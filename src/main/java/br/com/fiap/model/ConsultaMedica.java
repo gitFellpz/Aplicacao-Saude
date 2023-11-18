@@ -11,11 +11,9 @@ public class ConsultaMedica {
 	private double mediaAvaliacoes;
 	private int idMedicoAssociado;
 	private int idPacienteAssociado;
-	private int idTecnologiaAssociada;
 	
 	public ConsultaMedica(String areaMedica, String especialidade, String dataConsulta, String horaConsulta,
-			String localDeAtendimento, double mediaAvaliacoes, int idMedicoAssociado, int idPacienteAssociado,
-			int idTecnologiaAssociada) {
+			String localDeAtendimento, double mediaAvaliacoes, int idMedicoAssociado, int idPacienteAssociado) {
 
 		this.areaMedica = areaMedica;
 		this.especialidade = especialidade;
@@ -25,7 +23,6 @@ public class ConsultaMedica {
 		this.mediaAvaliacoes = mediaAvaliacoes;
 		this.idMedicoAssociado = idMedicoAssociado;
 		this.idPacienteAssociado = idPacienteAssociado;
-		this.idTecnologiaAssociada = idTecnologiaAssociada;
 	}
 
 	public int getId() { return id; }
@@ -75,16 +72,6 @@ public class ConsultaMedica {
 	public void setIdPacienteAssociado(int idPacienteAssociado) {
 		this.idPacienteAssociado = idPacienteAssociado;
 	}
-
-	public int getIdTecnologiaAssociada() {
-		return idTecnologiaAssociada;
-	}
-
-	public void setIdTecnologiaAssociada(int idTecnologiaAssociada) {
-		this.idTecnologiaAssociada = idTecnologiaAssociada;
-	}
-	
-	 
 	
 
 }

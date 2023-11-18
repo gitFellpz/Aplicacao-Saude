@@ -10,13 +10,12 @@ public class Usuario {
 	private String dataNasc;
 	private int    idade;
 	private String endereco;
-	private char   sexo;
+	private String   sexo;
 	private String estadoCivil;
 	private int tipoUsuario;
 	
-	
 	public Usuario (String nome, int idDadosUsuario, String email, String senha, String cpf, String dataNasc, int idade, 
-					String endereco, char sexo, String estadoCivil, int tipoUsuario) {
+					String endereco, String sexo, String estadoCivil, int tipoUsuario) {
 		
 		this.nome = nome;
 		this.idDadosUsuario = idDadosUsuario;
@@ -31,13 +30,16 @@ public class Usuario {
 		this.tipoUsuario = tipoUsuario;
 	}
 	
+	public Usuario (String email, String senha, int tipoUsuario) {
+		this.email = email;
+		this.senha = senha;
+		this.tipoUsuario = tipoUsuario;
+	}
+	
 
 	public Usuario () {
 
 	}
-
-
-
 	
 	public String getNome() { return nome; }
 	
@@ -71,9 +73,9 @@ public class Usuario {
 	
 	public void setEndereco(String endereco) { this.endereco = endereco; }
 	
-	public char getSexo() { return sexo; }
+	public String getSexo() { return sexo; }
 	
-	public void setSexo(char sexo) { this.sexo = sexo; }
+	public void setSexo(String sexo) { this.sexo = sexo; }
 	
 	public String getEstadoCivil() { return estadoCivil; }
 	
