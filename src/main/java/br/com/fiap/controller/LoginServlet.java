@@ -41,6 +41,7 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("tipo", tipoUsuario);
 			
 		} 
+		
 		else {
 			request.setAttribute("erro", "Usuário ou senha inválido");
 		}

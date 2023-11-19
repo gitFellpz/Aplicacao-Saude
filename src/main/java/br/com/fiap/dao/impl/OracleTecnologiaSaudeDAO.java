@@ -118,8 +118,9 @@ public class OracleTecnologiaSaudeDAO implements TecnologiaSaudeDAO {
 				String descricao = rs.getString("DESCRICAO");
 				Double mediaAvaliacoes = rs.getDouble("MEDIA_AVALIACOES");
 
-				tecnologia = new TecnologiaSaude(nome, descricao, mediaAvaliacoes);
+				tecnologia = new TecnologiaSaude(nome, descricao);
 				tecnologia.setId(id);
+				tecnologia.setMediaAvaliacoes(mediaAvaliacoes);
 			}
 
 		} 
@@ -159,8 +160,9 @@ public class OracleTecnologiaSaudeDAO implements TecnologiaSaudeDAO {
 				String descricao = rs.getString("DESCRICAO");
 				Double mediaAvaliacoes = rs.getDouble("MEDIA_AVALIACOES");
 
-				TecnologiaSaude tecnologia = new TecnologiaSaude(nome, descricao, mediaAvaliacoes);
+				TecnologiaSaude tecnologia = new TecnologiaSaude(nome, descricao);
 				tecnologia.setId(id);
+				tecnologia.setMediaAvaliacoes(mediaAvaliacoes);
 			
 				lista.add(tecnologia);
 			}

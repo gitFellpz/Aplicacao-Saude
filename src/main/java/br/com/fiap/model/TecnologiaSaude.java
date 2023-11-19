@@ -7,10 +7,9 @@ public class TecnologiaSaude {
 	private String descricao;
 	private double mediaAvaliacoes;
 	
-	public TecnologiaSaude(String nome, String descricao, double mediaAvaliacoes) {
+	public TecnologiaSaude(String nome, String descricao) {
 		this.nome = nome;
 		this.descricao = descricao;
-		this.mediaAvaliacoes = mediaAvaliacoes;
 	}
 	
 	public TecnologiaSaude() {
