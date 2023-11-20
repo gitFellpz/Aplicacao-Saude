@@ -9,22 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.fiap.dao.ExameMedicoDAO;
+import br.com.fiap.dao.AvaliacaoTecnologiaDAO;
 import br.com.fiap.exception.DBException;
 import br.com.fiap.factory.DAOFactory;
-import br.com.fiap.model.ExameMedico;
+import br.com.fiap.model.AvaliacaoTecnologia;
 
-@WebServlet("/exame")
-public class ExameMedicoServlet extends HttpServlet {
+@WebServlet("/tecnologia")
+public class AvaliacaoTecnologiaServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private ExameMedicoDAO dao;
+	private AvaliacaoTecnologiaDAO dao;
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		dao = DAOFactory.getExameMedicoDAO();
+		dao = DAOFactory.getAvaliacaoTecnologiaDAO();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -35,9 +35,11 @@ public class ExameMedicoServlet extends HttpServlet {
 		case "cadastrar":
 			cadastrar(request, response);
 			break;
+		
 		case "excluir":
 			excluir(request, response);
 			break;
+		
 		default:
 			break;
 		}
@@ -66,12 +68,12 @@ public class ExameMedicoServlet extends HttpServlet {
 	private void abrirFormCadastro(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		carregarOpcoesCategoria(request);
-		request.getRequestDispatcher("cadastro-exame.jsp").forward(request, response);
+		request.getRequestDispatcher("cadastro-avaliacao.jsp").forward(request, response);
 	}
 
 	private void carregarOpcoesCategoria(HttpServletRequest request) {
-		List<ExameMedico> lista = dao.listar();
-		request.setAttribute("exames", lista);
+		List<AvaliacaoTecnologia> lista = dao.listarAvaliacoes();
+		request.setAttribute("avaliacoes", lista);
 	}
 
 	private void abrirFormEdicao(HttpServletRequest request, HttpServletResponse response)
@@ -79,47 +81,40 @@ public class ExameMedicoServlet extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("codigo"));
 		
-		ExameMedico exame = dao.buscar(id);
+		AvaliacaoTecnologia avaliacao = dao.buscar(id);
 		
-		System.out.println(exame.getEspecialidade());
+		System.out.println(avaliacao.getAvaliacao());
 		
-		request.setAttribute("exame", exame);
+		request.setAttribute("avaliacao", avaliacao);
 		carregarOpcoesCategoria(request);
-		request.getRequestDispatcher("edicao-exame.jsp").forward(request, response);
+		request.getRequestDispatcher("edicao-avaliacao.jsp").forward(request, response);
 	}
 	
 
 	private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<ExameMedico> lista = dao.listar();
-		request.setAttribute("exames", lista);
-		request.getRequestDispatcher("lista-exame.jsp").forward(request, response);
+		List<AvaliacaoTecnologia> lista = dao.listarAvaliacoes();
+		request.setAttribute("avaliacoes", lista);
+		request.getRequestDispatcher("lista-avalicao.jsp").forward(request, response);
 	}
 
 	private void cadastrar(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int id = Integer.parseInt(request.getParameter("codigo"));
-			
-			String especialidade = request.getParameter("especialidade");
-			String data = request.getParameter("data");
-			String hora = request.getParameter("hora");
-			String local = request.getParameter("local");
-			int idMedicoAssociado = Integer.parseInt(request.getParameter("id-medico"));
+			int codigo = Integer.parseInt(request.getParameter("codigo"));
+			int nota = Integer.parseInt(request.getParameter("avaliacao"));
 			int idPacienteAssociado = Integer.parseInt(request.getParameter("id-paciente"));
 			int idTecnologiaAssociado = Integer.parseInt(request.getParameter("id-tecnologia"));
 
-
-			ExameMedico exame = 
-					new ExameMedico(especialidade, data, hora, local, idMedicoAssociado, idPacienteAssociado, idTecnologiaAssociado);
-			exame.setId(id);
+			AvaliacaoTecnologia avaliacao = new AvaliacaoTecnologia(nota, idPacienteAssociado, idTecnologiaAssociado);
+			avaliacao.setId(codigo);
 			
-			dao.cadastrar(exame);
+			dao.cadastrar(avaliacao);
 
-			request.setAttribute("msg", "Exame cadastrado!");
+			request.setAttribute("msg", "Avaliação cadastrada!");
 		} 
 		catch (DBException db) {
 			db.printStackTrace();
-			request.setAttribute("erro", "Erro ao cadastrar exame");
+			request.setAttribute("erro", "Erro ao cadastrar avaliação");
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -136,11 +131,11 @@ public class ExameMedicoServlet extends HttpServlet {
 		
 		try {
 			dao.remover(codigo);
-			request.setAttribute("msg", "Exame removido!");
+			request.setAttribute("msg", "Avaliação removida!");
 		} 
 		catch (DBException e) {
 			e.printStackTrace();
-			request.setAttribute("erro", "Erro ao atualizar exame");
+			request.setAttribute("erro", "Erro ao atualizar avaliação");
 		}
 		
 		listar(request, response);

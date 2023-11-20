@@ -9,22 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.fiap.dao.ExameMedicoDAO;
+import br.com.fiap.dao.DadosBiometricosDAO;
 import br.com.fiap.exception.DBException;
 import br.com.fiap.factory.DAOFactory;
-import br.com.fiap.model.ExameMedico;
+import br.com.fiap.model.DadosBiometricos;
 
-@WebServlet("/exame")
-public class ExameMedicoServlet extends HttpServlet {
+@WebServlet("/dados")
+public class DadosBiometricosServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private ExameMedicoDAO dao;
+	private DadosBiometricosDAO dao;
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		dao = DAOFactory.getExameMedicoDAO();
+		dao = DAOFactory.getDadosBiometricosDAO();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -35,6 +35,11 @@ public class ExameMedicoServlet extends HttpServlet {
 		case "cadastrar":
 			cadastrar(request, response);
 			break;
+			
+		case "editar":
+			editar(request, response);
+			break;
+			
 		case "excluir":
 			excluir(request, response);
 			break;
@@ -66,12 +71,12 @@ public class ExameMedicoServlet extends HttpServlet {
 	private void abrirFormCadastro(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		carregarOpcoesCategoria(request);
-		request.getRequestDispatcher("cadastro-exame.jsp").forward(request, response);
+		request.getRequestDispatcher("cadastro-dado.jsp").forward(request, response);
 	}
 
 	private void carregarOpcoesCategoria(HttpServletRequest request) {
-		List<ExameMedico> lista = dao.listar();
-		request.setAttribute("exames", lista);
+		List<DadosBiometricos> lista = dao.listar();
+		request.setAttribute("dados", lista);
 	}
 
 	private void abrirFormEdicao(HttpServletRequest request, HttpServletResponse response)
@@ -79,20 +84,20 @@ public class ExameMedicoServlet extends HttpServlet {
 		
 		int id = Integer.parseInt(request.getParameter("codigo"));
 		
-		ExameMedico exame = dao.buscar(id);
+		DadosBiometricos dadosB = dao.buscarDadosPaciente(id);
 		
-		System.out.println(exame.getEspecialidade());
+		System.out.println(dadosB.getFrequenciaCardiaca());
 		
-		request.setAttribute("exame", exame);
+		request.setAttribute("dado", dadosB);
 		carregarOpcoesCategoria(request);
-		request.getRequestDispatcher("edicao-exame.jsp").forward(request, response);
+		request.getRequestDispatcher("edicao-dado.jsp").forward(request, response);
 	}
 	
 
 	private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<ExameMedico> lista = dao.listar();
-		request.setAttribute("exames", lista);
-		request.getRequestDispatcher("lista-exame.jsp").forward(request, response);
+		List<DadosBiometricos> lista = dao.listar();
+		request.setAttribute("dados", lista);
+		request.getRequestDispatcher("lista-dado.jsp").forward(request, response);
 	}
 
 	private void cadastrar(HttpServletRequest request, HttpServletResponse response)
@@ -100,26 +105,20 @@ public class ExameMedicoServlet extends HttpServlet {
 		try {
 			int id = Integer.parseInt(request.getParameter("codigo"));
 			
-			String especialidade = request.getParameter("especialidade");
-			String data = request.getParameter("data");
-			String hora = request.getParameter("hora");
-			String local = request.getParameter("local");
-			int idMedicoAssociado = Integer.parseInt(request.getParameter("id-medico"));
-			int idPacienteAssociado = Integer.parseInt(request.getParameter("id-paciente"));
-			int idTecnologiaAssociado = Integer.parseInt(request.getParameter("id-tecnologia"));
+			String tipoSangue = request.getParameter("tipo-sangue");
+			String frequenciaCardiaca = request.getParameter("frequencia");
+			int idPacienteAssociado = Integer.parseInt(request.getParameter("paciente"));
 
-
-			ExameMedico exame = 
-					new ExameMedico(especialidade, data, hora, local, idMedicoAssociado, idPacienteAssociado, idTecnologiaAssociado);
-			exame.setId(id);
+			DadosBiometricos dados = new DadosBiometricos(tipoSangue, frequenciaCardiaca, idPacienteAssociado);
+			dados.setId(id);
 			
-			dao.cadastrar(exame);
+			dao.cadastrar(dados);
 
-			request.setAttribute("msg", "Exame cadastrado!");
+			request.setAttribute("msg", "Dados biometricos cadastrados!");
 		} 
 		catch (DBException db) {
 			db.printStackTrace();
-			request.setAttribute("erro", "Erro ao cadastrar exame");
+			request.setAttribute("erro", "Erro ao cadastrar dados biometricos");
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -127,6 +126,33 @@ public class ExameMedicoServlet extends HttpServlet {
 		}
 		
 		abrirFormCadastro(request, response);
+	}
+	
+	private void editar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			int id = Integer.parseInt(request.getParameter("codigo"));
+			
+			String tipoSangue = request.getParameter("tipo-sangue");
+			String frequenciaCardiaca = request.getParameter("frequencia");
+			int idPacienteAssociado = Integer.parseInt(request.getParameter("paciente"));
+
+			DadosBiometricos dados = new DadosBiometricos(tipoSangue, frequenciaCardiaca, idPacienteAssociado);
+			dados.setId(id);
+
+			dao.atualizar(dados);
+
+			request.setAttribute("msg", "Dados biometricos atualizados!");
+		} 
+		catch (DBException db) {
+			db.printStackTrace();
+			request.setAttribute("erro", "Erro ao atualizar dados biometricos");
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("erro", "Por favor, valide os dados");
+		}
+		
+		listar(request, response);
 	}
 
 	private void excluir(HttpServletRequest request, HttpServletResponse response)
@@ -136,11 +162,11 @@ public class ExameMedicoServlet extends HttpServlet {
 		
 		try {
 			dao.remover(codigo);
-			request.setAttribute("msg", "Exame removido!");
+			request.setAttribute("msg", "Dados biometricos removidos!");
 		} 
 		catch (DBException e) {
 			e.printStackTrace();
-			request.setAttribute("erro", "Erro ao atualizar exame");
+			request.setAttribute("erro", "Erro ao atualizar dados biometricos");
 		}
 		
 		listar(request, response);
